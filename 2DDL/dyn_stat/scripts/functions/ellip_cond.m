@@ -1,8 +1,8 @@
 function [omega, omegan, rlimx_1, rlimx_2, rlimx_3,...
     rlimy_1, rlimy_2, rlimy_3] = ...
     ellip_cond(L, l, cx, cy, ay, x0, y0,phix,phiy, k, tors,m,res)
-%ELLIP_COND takes the geo. parameters of the planar mechanism and shoots
-%out a graphic showing the volume of accesible range of motion.
+%ELLIP_COND takes the geo. parameters of the planar mechanism and the wrench and shoots
+%out a graphic showing the surfaces of accesible range of motion.
 %   The first 7 parameters are well know. The last one is the ratio between
 %   rx and ry such that ry = krx.
 g = 9.81; %m/s²
@@ -61,29 +61,6 @@ for i =1:length(omega)
     rlimx_1(i) = k*rlimy_1(i);
     rlimx_2(i) = k*rlimy_2(i);
     rlimx_3(i) = k*rlimy_3(i);
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% calcul pour rlimy
-%     d_11 = Phi_1*cos(phiy)^2 + Upsi_1*(1/(k^2))*cos(phix)^2-...
-%         2*sqrt(Phi_1*Upsi_1)*(1/k)*cos(phix)*cos(phiy);
-%     d_12 = Phi_2*cos(phiy)^2 + Upsi_2*(1/(k^2))*cos(phix)^2-...
-%         2*sqrt(Phi_2*Upsi_2)*(1/k)*cos(phix)*cos(phiy);
-%     d_13 = Phi_3*cos(phiy)^2 + Upsi_3*(1/(k^2))*cos(phix)^2-...
-%         2*sqrt(Phi_3*Upsi_3)*(1/k)*cos(phix)*cos(phiy);
-%     
-%     d_21 = Phi_1*sin(phiy)^2 + Upsi_1*(1/(k^2))*sin(phix)^2-...
-%         2*sqrt(Phi_1*Upsi_1)*(1/k)*sin(phix)*sin(phiy);
-%     d_22 = Phi_2*sin(phiy)^2 + Upsi_2*(1/(k^2))*sin(phix)^2-...
-%         2*sqrt(Phi_2*Upsi_2)*(1/k)*sin(phix)*sin(phiy);
-%     d_23 = Phi_3*sin(phiy)^2 + Upsi_3*(1/(k^2))*sin(phix)^2-...
-%         2*sqrt(Phi_3*Upsi_3)*(1/k)*sin(phix)*sin(phiy);
-%     
-%     theta_1 = sqrt(Phi_1+(1/(k^2))*Upsi_1-2*sqrt(Phi_1*Upsi_1)*(1/k)*cos(phix-phiy));
-%     theta_2 = sqrt(Phi_2+(1/(k^2))*Upsi_2-2*sqrt(Phi_2*Upsi_2)*(1/k)*cos(phix-phiy));
-%     theta_3 = sqrt(Phi_3+(1/(k^2))*Upsi_3-2*sqrt(Phi_3*Upsi_3)*(1/k)*cos(phix-phiy));
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     rlimx_1(i) = k*-g*Psi_1*theta_1/(d_11+d_21);
-%     rlimx_2(i) = -g*Psi_2*theta_2/(d_12+d_22);
-%     rlimx_3(i) = -g*Psi_3*theta_3/(d_13+d_23);
 end
 
 end

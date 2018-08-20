@@ -10,7 +10,7 @@ L = 5;
 l = 2;
 ay = 0.2;
 cy = -0.1;
-cx = -0.2;
+cx = 0;
 x0 = 8;
 y0 = -1;
 % TRAJECTORY
@@ -30,19 +30,19 @@ geo = pack_geo(ay,cy,cx,L,l);
 
 
 
-% Creation d'un torseur ressort
-kr = 5; %N/m
-pos_b = [10;0];
-l0 = norm([x0;y0]-pos_b);
-for i =1:length(pos(1,:))
-   er(:,i) =  pos(:,i)-pos_b;
-   lr = norm(er(:,i));
-   er(:,i) = er(:,i)/lr;
-   Tors(:,i) = -kr*(lr-l0)*[er(:,i);-(cx*er(2,i)-cy*er(1,i));];
-end
+% % Creation d'un torseur ressort
+% kr = 5; %N/m
+% pos_b = [10;0];
+% l0 = norm([x0;y0]-pos_b);
+% for i =1:length(pos(1,:))
+%    er(:,i) =  pos(:,i)-pos_b;
+%    lr = norm(er(:,i));
+%    er(:,i) = er(:,i)/lr;
+%    Tors(:,i) = -kr*(lr-l0)*[er(:,i);-(cx*er(2,i)-cy*er(1,i));];
+% end
+% 
 
-
-Tors = [0;2;2];
+Tors = [0;0;0];
 
 for i =1:length(pos)
 tens(:,i) = tension(m,geo,pos(:,i),acc(:,i),Tors);
@@ -113,12 +113,9 @@ grid on;
 
 k = rx/ry;
 
-Tors = [0,2,2];
-
-
 [omega, omegan, rlimx_1, rlimx_2, rlimx_3,...
     rlimy_1, rlimy_2, rlimy_3] = ...
-    ellip_cond(L, l, cx, cy, ay, x0, y0, phix,phiy, k, Tors, m, 1000);
+    ellip_cond(L, l, cx, cy, ay, x0, y0, phix,phiy, k, Tors, m, 10000);
 
 fig3 = figure;
 set(gcf,'color','w');
