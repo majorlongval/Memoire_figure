@@ -1,0 +1,22 @@
+%% Script to determine the latteral stifness as a function of all three param.
+clear all; close all; clc;
+addpath('functions');
+L = 5;
+l = 1;
+ay = linspace(-l,l,50);
+cy = ay;
+cx = linspace(-l,l,11);
+
+
+% The height at which the test is done :
+x = L;
+for i = 1:length(cx)
+    for j = 1:length(ay)
+        for k = 1:length(cy)
+            geo = pack_geo(ay(j),cy(k),cx(i),L,l);
+            ymin = y_min_stat(geo);
+            yv = linspace(ymin,L,50);
+            
+        end
+    end
+end

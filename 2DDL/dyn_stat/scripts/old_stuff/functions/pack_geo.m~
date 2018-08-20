@@ -1,0 +1,21 @@
+function geo = pack_geo(ay,cy,cx,L,l)
+%PACK_GEO packs the geometric parameters in a struct
+%   Detailed explanation goes here
+geo.ay = ay;
+geo.cy = cy;
+geo.cx = cx;
+geo.L = L;
+geo.l = l;
+
+
+geo.A1 = -L;
+geo.A2 = ay*(cy-L)+2*L*cy-l*(ay+L);
+geo.A3 = -ay*(cy-L)-2*L*cy-l*(ay+L);
+
+geo.B1 = 1;
+geo.B2 = ay-l;
+geo.B3 = -(ay+l);
+
+
+end
+

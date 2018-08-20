@@ -1,0 +1,68 @@
+function tau = tension_stat(pos,gp)
+%TENSION_STAT Calculates the static tension/unit mass in each cable as a function of
+%the position and the geometric parameters of the robot
+%   pos is the [x;y] vector of position of the end-effector
+%   gp is a struct containing the geometric parameters of the robot
+
+% Importing values
+L = gp.L;
+l = gp.l;
+ax = gp.ax;
+ay = gp.ay;
+cx = gp.cx;
+cy = gp.cy;
+
+% Parameters
+A2 = L*ax*(L+cy);
+A3 = -A2;
+B2 = -ax*cy;
+B3 = -B2;
+C2 = ay*(cy-L)+2*L*cy-l*(ay+L);
+C3 = -C2;
+D2 = (ay-l);
+D3 = -(l+ay);
+E3 = 
+
+if gp.ax == 0
+
+
+
+
+
+
+
+
+% 
+% g = 9.81;
+% 
+% E = [0,-1;1,0];
+% gam = [g;0;0];
+% 
+% if size(pos) == [1,2]
+%     pos = pos';
+% end
+% 
+% e1 = (pos+a1-b1)/norm(pos+a1-b1);
+% e2 = (pos+a2-b2)/norm(pos+a2-b2);
+% delta1    = (a1-c)'*E*e1;
+% delta2    = (a2-c)'*E*e2;
+% delta3    = (a3-c)'*E*e2;
+% 
+% M = [e1 e2 e2;delta1 delta2 delta3];
+% %Madj = inv(M)*det(M)
+% detM = (a2-a3)'*E*e2*e1'*E*e2;
+% epsi1     = cross([e2;delta2],[e2;delta3]);
+% epsi2     = cross([e2;delta3],[e1;delta1]);
+% epsi3     = cross([e1;delta1],[e2;delta2]); 
+% 
+% %test = [epsi1,epsi2,epsi3]'
+% %test2 = ((a2-a3 )'*E*e2*e1'*E*e2)
+% %test3 = det([e1,e2])
+% %test4 = e1'*E*e2
+% tau = [epsi1,epsi2,epsi3]'*gam/detM;
+
+
+end
+
+
+
