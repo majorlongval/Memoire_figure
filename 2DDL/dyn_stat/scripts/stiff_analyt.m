@@ -41,3 +41,7 @@ sol1t =  collect(simplify(det(M1))==0,[fx,fy,Me,g]);
 sol2t = collect(simplify(det(M2))==0,[fx,fy,Me,g]);
 sol3t = collect(simplify(det(M3))==0,[fx,fy,Me,g]);
 
+
+
+
+

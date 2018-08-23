@@ -16,21 +16,21 @@ addpath('functions');
 
 L      = 5;            % m distance between independant and dep. pulleys
 l      = 1;            % m width of end-effector
-cx     = 0.2;          % m X position of centre of mass
-cy     = 0.2;         % m Y position of centre of mass
-ay     = -0.1;          % m attach position of independant cable
-x0     = 8;            % m X centre of oscillation
-y0     = 0;            % m Y centre of oscillation
-tors   = [0, 2, 1];    % [N, N, Nm] The wrench
-m      = 2;            % kg mass of the end-effector
+cx     = 0;          % m X position of centre of mass
+cy     = -0.2;         % m Y position of centre of mass
+ay     = -0.2;          % m attach position of independant cable
+x0     = 12;            % m X centre of oscillation
+y0     = 1;            % m Y centre of oscillation
+m      = 1;            % kg mass of the end-effector
 res    = 1000;         % resolution of functions
-a      = 4;            % m major axis
-b      = 20;            % m minor axis
+a      = 1;            % m major axis
+b      = 12;            % m minor axis
 theta  = 0;            % rad angle of ellips
 phi    = 0;            % rad starting angle
 g      = 9.81;         % m/s^2 gravitational acceleration
-omegaf = sqrt(g/8);    % rad/s angular frequency of traj
-T      = 10*pi/omegaf; % s period of transition
+omegaf = sqrt(g/12);    % rad/s angular frequency of traj
+T      = 14*pi/omegaf; % s period of transition
+tors   = [0, m*g*(L+y0+ay)/x0 , 2];    % [N, N, Nm] The wrench
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Trajectory calculation  %%%%%%%%%%%%%%%%%%%%%
