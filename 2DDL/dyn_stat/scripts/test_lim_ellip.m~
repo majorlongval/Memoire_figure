@@ -17,15 +17,15 @@ addpath('functions');
 L      = 5;            % m distance between independant and dep. pulleys
 l      = 1;            % m width of end-effector
 cx     = 0;            % m X position of centre of mass
-cy     = 0.1;          % m Y position of centre of mass
-ay     = -0.2;         % m attach position of independant cable
+cy     = 0.1;            % m Y position of centre of mass
+ay     = -0.2;            % m attach position of independant cable
 x0     = 12;           % m X centre of oscillation
-y0     = 2;            % m Y centre of oscillation
+y0     = 1;            % m Y centre of oscillation
 m      = 1;            % kg mass of the end-effector
 res    = 1000;         % resolution of functions
 a      = 0;            % m major axis
-b      = 20;           % m minor axis
-theta  = 0;            % rad angle of ellips
+b      = 10;           % m minor axis
+theta  = 0;        % rad angle of ellips
 phi    = 0;            % rad starting angle
 g      = 9.81;         % m/s^2 gravitational acceleration
 omegaf = sqrt(g/12);   % rad/s angular frequency of traj
@@ -178,7 +178,7 @@ set(gcf,'color','w');
 fill([0,rlim_y_fin,0]/L,...
      [0,omega,omega(end)]/omegan,[0.8,0.8,0.8]...
      ); hold on;
-plot(ry/L,omegaf/omegan,'*r');
+ plot(rx/x0,omegaf/omegan,'*r');
 plot(rlimy_1/L,omega/omegan,':k','LineWidth',2);  grid on;
 plot(rlimy_2/L,omega/omegan,'--k','LineWidth',2);
 plot(rlimy_3/L,omega/omegan,'-.k','LineWidth',2);
