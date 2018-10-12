@@ -1,0 +1,9 @@
+$\bm{\mathcal{X}} = \left\{ \mathbf{x}_{ij}\middle| \mathbf{x}_{ij}=\mathbf{A}^{-1}_{ij}\mathbf{k}_{ij},\mathbf{A}_{ij}=\begin{bmatrix}c_{xi} & c_{yi}\\c_{xj} & c_{yj}\end{bmatrix},\mathbf{k}_{ij} = \begin{bmatrix}-c_{ki}\\-c_{kj}\end{bmatrix},i,j=1...6,i \neq j\right\}$
+
+$\mathcal{X}_c = \binom{\mathcal{X}}{2}=\left\{\chi_1,\chi_2,\chi_3,...,\chi_{103},\chi_{104},\chi_{105}\right\}=\left\{\left\{\mathbf{x}_{12},\mathbf{x}_{13}\right\},\left\{\mathbf{x}_{12},\mathbf{x}_{14}\right\},\left\{\mathbf{x}_{12},\mathbf{x}_{15}\right\},...,\left\{\mathbf{x}_{45},\mathbf{x}_{46}\right\},\left\{\mathbf{x}_{45},\mathbf{x}_{56}\right\},\left\{\mathbf{x}_{46},\mathbf{x}_{56}\right\}\right\}$
+
+
+$\mathcal{S} = \left\{\text{seg}\left(\chi_i \right): \chi_i \in \mathcal{X}_c, i =1...105, \middle|\text{seg}\left(A\right) = \mathbf{a}_1+t \left(\mathbf{a}_2-\mathbf{a}_1\right), A =\left\{\mathbf{a}_1,\mathbf{a}_2\right\} \right\}$
+
+
+

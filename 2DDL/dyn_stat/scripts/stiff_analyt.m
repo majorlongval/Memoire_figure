@@ -29,17 +29,26 @@ delta3    = (a3-c)'*E*e2;
 gamma = [g+fx; fy; Me];
 
 
-sol = adjoint([e1 e2 e2;delta1 delta2 delta3])*gamma;
-% % Latteral stifness
-ey = [g+fx;fy];
+detM = (a2-a3)'*E*e2*(e1'*E*e2)
 
-M1 = [ey e2 e2;Me delta2 delta3];
-M2 = [e1 ey e2;delta1 Me delta3];
-M3 = [e1 e2 ey;delta1 delta2 Me];
+M = [e1' delta1;
+     e2' delta2;
+     e2' delta3];
+detMspec = simplify(det(subs(M,ay,l)));
 
-sol1t =  collect(simplify(det(M1))==0,[fx,fy,Me,g]);
-sol2t = collect(simplify(det(M2))==0,[fx,fy,Me,g]);
-sol3t = collect(simplify(det(M3))==0,[fx,fy,Me,g]);
+
+% 
+% sol = adjoint([e1 e2 e2;delta1 delta2 delta3])*gamma;
+% % % Latteral stifness
+% ey = [g+fx;fy];
+% 
+% M1 = [ey e2 e2;Me delta2 delta3];
+% M2 = [e1 ey e2;delta1 Me delta3];
+% M3 = [e1 e2 ey;delta1 delta2 Me];
+% 
+% sol1t =  collect(simplify(det(M1))==0,[fx,fy,Me,g]);
+% sol2t = collect(simplify(det(M2))==0,[fx,fy,Me,g]);
+% sol3t = collect(simplify(det(M3))==0,[fx,fy,Me,g]);
 
 
 

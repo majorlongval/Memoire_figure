@@ -1,0 +1,6 @@
+h_{c},    0,    r\,\sin\left(2\,\alpha \right)-r_{c}\,\cos\left(\varphi _{c}\right),    0,    1,    0,    
+-h_{c},    0,    r\,\sin\left(2\,\alpha \right)+r_{c}\,\cos\left(\varphi _{c}\right),    0,    -1,    0,    
+h_{c},    0,    \sqrt{3}\,r\,{\cos\left(\alpha \right)}^2-\frac{r\,\sin\left(2\,\alpha \right)}{2}-r_{c}\,\cos\left(\varphi _{c}\right),    0,    1,    0,    
+-h_{c},    0,    \sqrt{3}\,r\,{\cos\left(\alpha \right)}^2-\frac{r\,\sin\left(2\,\alpha \right)}{2}+r_{c}\,\cos\left(\varphi _{c}\right),    0,    -1,    0,    
+h_{c},    0,    -\sqrt{3}\,r\,{\cos\left(\alpha \right)}^2-\frac{r\,\sin\left(2\,\alpha \right)}{2}-r_{c}\,\cos\left(\varphi _{c}\right),    0,    1,    0,    
+-h_{c},    0,    -\sqrt{3}\,r\,{\cos\left(\alpha \right)}^2-\frac{r\,\sin\left(2\,\alpha \right)}{2}+r_{c}\,\cos\left(\varphi _{c}\right),    0,    -1,    0,    
