@@ -36,7 +36,7 @@ M = [e1' delta1;
      e2' delta3];
 detMspec = simplify(det(subs(M,ay,l)));
 
-
+M
 % 
 % sol = adjoint([e1 e2 e2;delta1 delta2 delta3])*gamma;
 % % % Latteral stifness

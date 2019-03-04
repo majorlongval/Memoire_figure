@@ -1,4 +1,4 @@
-function [varargout] = Effort_poly(x, y, geo)
+function [varargout] = Effort_poly(x, y, geo,rangefx,rangefy,rangeMe)
 %Effort_poly calculates the polyhedron of force/torque that can be applied
 %to the center of mass of the end-effector.
 %   the first 7 inputs are positions and parameters
@@ -63,18 +63,56 @@ if nargout >=4
     patch([0 u(1,2) u(1,3)]/g,[0 u(2,2) u(2,3)]/g,[-g 0 0]/g,'green',...
         'FaceAlpha',0.3,'FaceVertexCData',c,'EdgeColor','flat',...
         'LineWidth',2);
+    patch([u(1,1) u(1,2) u(1,3)]/g,[u(2,1) u(2,2) u(2,3)]/g,[0 0 0]/g,'green',...
+    'FaceAlpha',0.3,'FaceVertexCData',c,'EdgeColor','flat',...
+    'LineWidth',2);
     plot3([0 u(1,2)]/g,[0 u(2,2)]/g,[-g 0]/g,'-r','LineWidth',2);
     plot3([0 u(1,3)]/g,[0 u(2,3)]/g,[-g 0]/g,'-r','LineWidth',2);
-    %plot3([u(1,1) u(1,2)]/g,[u(2,1) u(2,2)]/g,[0 0],'-k','LineWidth',2);
-    %plot3([u(1,2) u(1,3)]/g,[u(2,2) u(2,3)]/g,[0 0],'-k','LineWidth',2);
-    %plot3([u(1,1) u(1,3)]/g,[u(2,1) u(2,3)]/g,[0 0],'-k','LineWidth',2);
+    plot3([u(1,1) u(1,2)]/g,[u(2,1) u(2,2)]/g,[0 0],'-k','LineWidth',2);
+    plot3([u(1,2) u(1,3)]/g,[u(2,2) u(2,3)]/g,[0 0],'-k','LineWidth',2);
+    plot3([u(1,1) u(1,3)]/g,[u(2,1) u(2,3)]/g,[0 0],'-k','LineWidth',2);
     plot3(u(1,1)/g,u(2,1)/g,0,'*b','LineWidth',2);
     plot3(u(1,2)/g,u(2,2)/g,0,'*b','LineWidth',2);
     plot3(u(1,3)/g,u(2,3)/g,0,'*b','LineWidth',2);
     
+    plot_box_range(rangefx,rangefy,rangeMe);
 %    plot3([0 0],varargout{2},[0 0],'-b','LineWidth',2);
 %    plot3(varargout{3},[0 0],[0 0],'-b','LineWidth',2);
     xlabel('001'); ylabel('002'); zlabel('003');
+    axis([-1 1 -1 1 -1 0]);
 end
+
+
+
+
+    function  plot_box_range(rangefx,rangefy,rangeMe)
+        fymin = rangefy(1);
+        fymax = rangefy(2);
+        fxmin = rangefx(1);
+        fxmax = rangefx(2);
+        Memin = rangeMe(1);
+        Memax = rangeMe(2);
+        plot3(fymin,Memin,fxmin,'*r','LineWidth',2);
+        plot3(fymin,Memax,fxmin,'*r','LineWidth',2);
+        plot3(fymin,Memin,fxmax,'*r','LineWidth',2);
+        plot3(fymax,Memin,fxmin,'*r','LineWidth',2);
+        plot3(fymax,Memax,fxmin,'*r','LineWidth',2);
+        plot3(fymax,Memin,fxmax,'*r','LineWidth',2);
+        plot3(fymin,Memax,fxmax,'*r','LineWidth',2);
+        plot3(fymax,Memax,fxmax,'*r','LineWidth',2);
+        
+        patch([fymax,fymax,fymax,fymax],[Memin,Memin,Memax,Memax],...
+              [fxmax,fxmin,fxmin,fxmax],'blue','FaceAlpha',0.3);
+        patch([fymin,fymin,fymin,fymin],[Memin,Memin,Memax,Memax],...
+              [fxmax,fxmin,fxmin,fxmax],'blue','FaceAlpha',0.3);
+        patch([fymin,fymin,fymax,fymax],[Memin,Memin,Memin,Memin],...
+              [fxmax,fxmin,fxmin,fxmax],'blue','FaceAlpha',0.3);
+        patch([fymin,fymin,fymax,fymax],[Memax,Memax,Memax,Memax],...
+              [fxmax,fxmin,fxmin,fxmax],'blue','FaceAlpha',0.3);
+        patch([fymin,fymin,fymax,fymax],[Memax,Memin,Memin,Memax],...
+              [fxmax,fxmax,fxmax,fxmax],'blue','FaceAlpha',0.3);
+        patch([fymin,fymin,fymax,fymax],[Memax,Memin,Memin,Memax],...
+              [fxmin,fxmin,fxmin,fxmin],'blue','FaceAlpha',0.3);
+    end
 end
 

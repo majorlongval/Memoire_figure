@@ -13,36 +13,35 @@ cy = -0.2;
 cx = 0.1;
 x0 = 8;
 y0 = 2;
+dy = -0.2;
 % TRAJECTORY
-a = 5;
-b = 10;
-theta = pi/12;
-phi = 0;
-omegaf = 0.9*sqrt(g/8);
-T = 3.2*pi/omegaf;
+phix = -1.08;
+phiy = 0.13;
+ry = 9.75;
+rx = 5.48;
+k = rx/ry;
+omega = 1.1;
+T = 5*pi/omega;
+
+pos_ini = [x0;y0];
 
 
+[posup,posdown, accup,accdown,tup,tdown] = transtraj2D(pos_ini, rx, ry,phix,phiy, omega, T)
 
-[pos, acc, t,phix,phiy,rx,ry] = ...
-    traj2Dabtheta([x0;y0],a,b,theta,phi,omegaf,T);
+tend = tup(end);
+[pos, acc, t] = ...
+    traj2Drxry(pos_ini, rx, ry, omega, phix, phiy,tend)
+
 
 geo = pack_geo(ay,cy,cx,L,l);
 
+mC = 1;
 
+Tors = mC*g*[0;0;0];
 
-% % Creation d'un torseur ressort
-% kr = 5; %N/m
-% pos_b = [10;0];
-% l0 = norm([x0;y0]-pos_b);
-% for i =1:length(pos(1,:))
-%    er(:,i) =  pos(:,i)-pos_b;
-%    lr = norm(er(:,i));
-%    er(:,i) = er(:,i)/lr;
-%    Tors(:,i) = -kr*(lr-l0)*[er(:,i);-(cx*er(2,i)-cy*er(1,i));];
-% end
-% 
-
-Tors = [0;0;0];
+pos = [posup,pos,posdown];
+acc = [accup,acc,accdown];
+t = [tup, t, tup(end)+t(end)+tdown];
 
 for i =1:length(pos)
 tens(:,i) = tension(m,geo,pos(:,i),acc(:,i),Tors);
@@ -113,29 +112,29 @@ saveas(fig2,'path_traj.eps','epsc');
 
 
 %% Printing the graph of the curves in rw
-
-
-k = rx/ry;
-
-[omega, omegan, rlimx_1, rlimx_2, rlimx_3,...
-    rlimy_1, rlimy_2, rlimy_3] = ...
-    ellip_cond(L, l, cx, cy, ay, x0, y0, phix,phiy, k, Tors, m, 10000);
-
-fig3 = figure;
-set(gcf,'color','w');
-plot(rlimx_1/x0,omega/omegan,':k','LineWidth',2); hold on; grid on;
-plot(rlimx_2/x0,omega/omegan,'--k','LineWidth',2);
-plot(rlimx_3/x0,omega/omegan,'-.k','LineWidth',2);
-plot(rx/x0,omegaf/omegan,'*r');
-axis([0 2 0 2]);
-xticks([0 0.5 1 1.5 2]); yticks([0 0.5 1 1.5 2]);
-hold off;
-xlabel('S01','FontSize',16); ylabel('S02','FontSize',16);
-l3 = legend('S0003','S0004','S0005');
-l3.FontSize = 16;
-title('S06');
-
-saveas(fig3,'rxomega.eps','epsc');
-
-
-% Finding a value for a minimum value of T
+% 
+% 
+% k = rx/ry;
+% 
+% [omega, omegan, rlimx_1, rlimx_2, rlimx_3,...
+%     rlimy_1, rlimy_2, rlimy_3] = ...
+%     ellip_cond(L, l, cx, cy, ay, x0, y0, phix,phiy, k, Tors, m, 10000);
+% 
+% fig3 = figure;
+% set(gcf,'color','w');
+% plot(rlimx_1/x0,omega/omegan,':k','LineWidth',2); hold on; grid on;
+% plot(rlimx_2/x0,omega/omegan,'--k','LineWidth',2);
+% plot(rlimx_3/x0,omega/omegan,'-.k','LineWidth',2);
+% plot(rx/x0,omegaf/omegan,'*r');
+% axis([0 2 0 2]);
+% xticks([0 0.5 1 1.5 2]); yticks([0 0.5 1 1.5 2]);
+% hold off;
+% xlabel('S01','FontSize',16); ylabel('S02','FontSize',16);
+% l3 = legend('S0003','S0004','S0005');
+% l3.FontSize = 16;
+% title('S06');
+% 
+% saveas(fig3,'rxomega.eps','epsc');
+% 
+% 
+% % Finding a value for a minimum value of T

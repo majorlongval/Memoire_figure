@@ -1,0 +1,552 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Calculating the boundaries of the wrench feasible workspace</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-02-12"><meta name="DC.source" content="plot_etape.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Calculating the boundaries of the wrench feasible workspace</h1><!--introduction--><p>Author : Jordan M. Longval</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Initialising</a></li><li><a href="#2">Calculating the WFW</a></li><li><a href="#3">Plotting the whole WFW</a></li><li><a href="#4">Plotting the first step</a></li></ul></div><h2 id="1">Initialising</h2><pre class="codeinput">clear; clc; close <span class="string">all</span>;
+
+addpath(<span class="string">'/home/jordan/Documents/Memoire_figure_git/3DDL/functions'</span>);
+
+<span class="comment">% Setting the arbitrary values</span>
+R     = 1;         <span class="comment">% m</span>
+r     = 0.2;       <span class="comment">% m</span>
+alpha = 0;         <span class="comment">% rad</span>
+rc    = 0.04;         <span class="comment">% m</span>
+pc  = pi/6;      <span class="comment">% rad</span>
+hc    = 0.5;         <span class="comment">% m</span>
+
+
+<span class="comment">% Setting the minimum and maximum heigth</span>
+zmin = 1;          <span class="comment">% m</span>
+zmax = 10;         <span class="comment">% m</span>
+
+<span class="comment">% Range of values for the external wrench and the mass</span>
+Mx = [-2 2];     <span class="comment">% Nm</span>
+My = [2 6];      <span class="comment">% Nm</span>
+Mz = [1 1.5];    <span class="comment">% Nm</span>
+fx = [-6 2];     <span class="comment">% N</span>
+fy = [4 8];      <span class="comment">% N</span>
+fz = 0;          <span class="comment">% N</span>
+m  = 30;         <span class="comment">% kg</span>
+
+<span class="comment">% Defining all the possible combinations of wrenches</span>
+wrench_comb = [];
+<span class="keyword">for</span> a = 1:length(fx)
+    <span class="keyword">for</span> b =1:length(fy)
+        <span class="keyword">for</span> c = 1:length(fz)
+            <span class="keyword">for</span> d = 1:length(Mx)
+                <span class="keyword">for</span> e = 1:length(My)
+                    <span class="keyword">for</span> f = 1:length(Mz)
+                        wrench_comb = [wrench_comb;<span class="keyword">...</span>
+                            fx(a),fy(b),fz(c),Mx(d),My(e),Mz(f)];
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+zr = [zmin,zmax];
+</pre><h2 id="2">Calculating the WFW</h2><pre class="codeinput">[corners,volume,K] = WFW_Calculator(R,r,alpha,rc,pc,hc,m,wrench_comb,zr);
+</pre><h2 id="3">Plotting the whole WFW</h2><pre class="codeinput">fig1 = figure;
+<span class="comment">% plot3(points(:,1),points(:,2),points(:,3),'*r');</span>
+points = corners(:,4:6);
+minx = 1.1*min(points(:,1));
+maxx = 1.1*max(points(:,1));
+miny = 1.1*min(points(:,2));
+maxy = 1.1*max(points(:,2));
+axis([minx maxx miny maxy 0.9*zmin 1.1*zmax])
+hold <span class="string">on</span>;
+trh = trisurf(K,points(:,1),points(:,2),points(:,3));
+trh.FaceColor = [0.2 0.2 1];
+trh.FaceAlpha = 0.5;
+trh.LineWidth = 2;
+<span class="comment">% Print projections for better view</span>
+proj_z = [points(:,1),points(:,2),ones(length(points(:,1)),1)*1.1*zmax];
+Kpz = convhull(proj_z(:,1),proj_z(:,2));
+plot3(points(Kpz,1),points(Kpz,2),1.1*zmax*ones(length(Kpz),1),<span class="string">'k--'</span>);
+proj_x = [ones(length(points(:,1)),1)*maxx,points(:,2),points(:,3)];
+Kpx = convhull(proj_x(:,2),proj_x(:,3));
+plot3(maxx*ones(length(Kpx),1),points(Kpx,2),points(Kpx,3),<span class="string">'k--'</span>);
+proj_y = [points(:,1),ones(length(points(:,1)),1)*miny,points(:,3)];
+Kpy = convhull(proj_y(:,1),proj_y(:,3));
+plot3(points(Kpy,1),miny*ones(length(Kpy),1),points(Kpy,3),<span class="string">'k--'</span>);
+
+set (gca,<span class="string">'Ydir'</span>,<span class="string">'reverse'</span>);
+set (gca,<span class="string">'Zdir'</span>,<span class="string">'reverse'</span>);
+grid <span class="string">on</span>;
+xlabel(<span class="string">'xlabel'</span>);
+ylabel(<span class="string">'ylabel'</span>);
+zlabel(<span class="string">'zlabel'</span>);
+view(-59,22);
+set(gcf,<span class="string">'renderer'</span>,<span class="string">'Painters'</span>)
+print <span class="string">-dsvg</span> <span class="string">complet1.svg</span>
+<span class="comment">%</span>
+</pre><img vspace="5" hspace="5" src="plot_etape_01.png" alt=""> <h2 id="4">Plotting the first step</h2><p>% Printing the first part (base) % I have to print all of the planes. x = [minx maxx]; fig2 = figure; for i =1:length(planes(:,1))     y = (-1/planes(i,2))*(planes(i,1)*x+planes(i,3)*zmin+planes(i,4));     lh(i)= plot3(x, y, [zmin,zmin],'-k');     hold on; end axis([minx maxx miny maxy 0.9*zmin 1.1*zmax]) set (gca,'Ydir','reverse'); set (gca,'Zdir','reverse'); grid on; xlabel('xlabel'); ylabel('ylabel'); zlabel('zlabel'); view(-59,22); set(gcf,'renderer','Painters') print -dsvg top_lines.svg</p><p>% Finding the good points fig3 = figure; proj_z = [points(:,1),points(:,2),ones(length(points(:,1)),1)*zmin]; Kpz = convhull(proj_z(:,1),proj_z(:,2)); plot3(points(Kpz,1),points(Kpz,2),zmin*ones(length(Kpz),1),'*b'); % ph = patch(points(Kpz,1),points(Kpz,2),zmin*ones(length(Kpz),1),[0.2,0.2,1]); % ph.FaceAlpha =0.5; % ph.LineWidth = 2; view(3); axis([minx maxx miny maxy 0.9*zmin 1.1*zmax]) set (gca,'Ydir','reverse'); set (gca,'Zdir','reverse'); grid on; xlabel('xlabel'); ylabel('ylabel'); zlabel('zlabel'); view(-59,22); set(gcf,'renderer','Painters') hold on; t = linspace(zmin-1,zmax+1,10); pii = p_inter_ini; for i =1:length(pii(:,1))     pxy(:,:,i) = [planes(pii(i,1),1) planes(pii(i,1),2);...                    planes(pii(i,2),1) planes(pii(i,2),2)]\...                    -[planes(pii(i,1),3)*t+planes(pii(i,1),4);...                      planes(pii(i,2),3)*t+planes(pii(i,2),4)];    plot3(pxy(1,:,i),pxy(2,:,i),t,'-k'); end</p><pre class="codeinput"><span class="comment">% Finding the points that are on each of the lines</span>
+
+
+
+
+
+<span class="comment">%</span>
+<span class="comment">% % From the list of points which was found previously, Determing if the</span>
+<span class="comment">% % planes which give rise to this point intersection with any other planes</span>
+<span class="comment">% tic</span>
+<span class="comment">% for i =1:length(p_inter_ini(:,1))</span>
+<span class="comment">%     for j =1:length(planes(:,1))-2</span>
+<span class="comment">%         if j~=p_inter_ini(i,1) &amp;&amp; j~=p_inter_ini(i,2)</span>
+<span class="comment">%             temp = calc_plane_intersection(planes(p_inter_ini(i,1),:),...</span>
+<span class="comment">%                 planes(p_inter_ini(i,2),:),...</span>
+<span class="comment">%                 planes(j,:));</span>
+<span class="comment">%             if ~isempty(temp)</span>
+<span class="comment">%                 bool =1;</span>
+<span class="comment">%                 for h = 1:length(planes(:,1))</span>
+<span class="comment">%                     if h~=p_inter_ini(i,1) &amp;&amp; h~=p_inter_ini(i,2) &amp;&amp; h~=j</span>
+<span class="comment">%                         valid = (planes(h,1:3)*temp)+planes(h,4)&gt;0;</span>
+<span class="comment">%                         bool = bool*valid;</span>
+<span class="comment">%                     end</span>
+<span class="comment">%                 end</span>
+<span class="comment">%                 if bool ==1</span>
+<span class="comment">%                     n_p_o_l =[n_p_o_l;p_inter_ini(i,1),p_inter_ini(i,2),h,temp'];</span>
+<span class="comment">%                 end</span>
+<span class="comment">%             end</span>
+<span class="comment">%</span>
+<span class="comment">%         end</span>
+<span class="comment">%     end</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% % Defining the list of all projection lines at the plane z =zmax</span>
+<span class="comment">% L_l_e = [];</span>
+<span class="comment">% for i =1:length(wrench_comb(:,1))</span>
+<span class="comment">%     L_l_e = [L_l_e;Calc_lines(alpha, R, r, rc, phic, ...</span>
+<span class="comment">%         hc,m,zmax,wrench_comb(i,:))];%,...</span>
+<span class="comment">%     %rhomax,rhomin,fmin,fmax)];</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% % Determining the points on the z=zmin plane which are good.</span>
+<span class="comment">% p_inter_end = [];</span>
+<span class="comment">% for i =1:length(L_l_e(:,1))-1</span>
+<span class="comment">%     for j=i+1:length(L_l_e(:,1))</span>
+<span class="comment">%         temp = Calc_intersection(L_l_e(i,:), L_l_e(j,:));</span>
+<span class="comment">%         bool = 1;</span>
+<span class="comment">%         for k =1:length(L_l_e(:,1))</span>
+<span class="comment">%             if k ~= i &amp;&amp; k~= j</span>
+<span class="comment">%                 verif = L_l_e(k,1)*temp(1)+L_l_e(k,2)*temp(2)+L_l_e(k,3) &gt; 0;</span>
+<span class="comment">%                 bool = bool*verif;</span>
+<span class="comment">%             end</span>
+<span class="comment">%         end</span>
+<span class="comment">%         if bool ==1</span>
+<span class="comment">%             p_inter_end = [p_inter_end;i,j,temp];</span>
+<span class="comment">%</span>
+<span class="comment">%         end</span>
+<span class="comment">%     end</span>
+<span class="comment">% end</span>
+<span class="comment">% t2 = toc</span>
+<span class="comment">% vertices = [p_inter_ini(:,3:4),ones(length(p_inter_ini(:,1)),1)*zmin;];</span>
+<span class="comment">%</span>
+<span class="comment">% if ~isempty(n_p_o_l)</span>
+<span class="comment">%    vertices = [vertices;n_p_o_l(:,4:6)];</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% if ~isempty(p_inter_end)</span>
+<span class="comment">%     vertices = [vertices;...</span>
+<span class="comment">%                 p_inter_end(:,3:4),ones(length(p_inter_end(:,1)),1)*zmax];</span>
+<span class="comment">% end</span>
+<span class="comment">% vertices</span>
+<span class="comment">% [K1,v1] = convhulln(vertices);</span>
+<span class="comment">%</span>
+<span class="comment">% hold on;</span>
+<span class="comment">% plot3(vertices(:,1),vertices(:,2),vertices(:,3),'*b');</span>
+<span class="comment">%%%%%%%%% PLANE METHOD %%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%</span>
+<span class="comment">% tic</span>
+<span class="comment">% int = [];</span>
+<span class="comment">% count = 0;</span>
+<span class="comment">% for i=1:length(planes(:,1))-2</span>
+<span class="comment">%     for j=i+1:length(planes(:,1))-1</span>
+<span class="comment">%         for k =j+1:length(planes(:,1))</span>
+<span class="comment">%             temp = calc_plane_intersection(planes(i,:),planes(j,:),planes(k,:));</span>
+<span class="comment">%             if ~isempty(temp)</span>
+<span class="comment">%                   count = count+1;</span>
+<span class="comment">%                 bool = 1;</span>
+<span class="comment">%                 for h =1:length(planes(:,1))</span>
+<span class="comment">%                     if h~=i &amp;&amp; h~=j &amp;&amp; h~=k</span>
+<span class="comment">%                         valid = (planes(h,1:3)*temp)+planes(h,4)&gt;0;</span>
+<span class="comment">%                         bool = bool*valid;</span>
+<span class="comment">%                     end</span>
+<span class="comment">%                 end</span>
+<span class="comment">%                 if bool == 1</span>
+<span class="comment">%                     int = [int;...</span>
+<span class="comment">%                         i,j,k,temp'];</span>
+<span class="comment">%                 end</span>
+<span class="comment">%             end</span>
+<span class="comment">%         end</span>
+<span class="comment">%     end</span>
+<span class="comment">% formatSpec = '%3.4f percent complete\n';</span>
+<span class="comment">% fprintf(formatSpec,(i/(length(planes(:,1))-2))*100);</span>
+<span class="comment">% end</span>
+<span class="comment">% int = sortrows(int,6)</span>
+<span class="comment">% t2 = toc</span>
+<span class="comment">%</span>
+<span class="keyword">function</span> [vert, set_new_lines] = branching(ip1,ip2,ntp,planes)
+vert = [];
+set_new_lines = [];
+<span class="keyword">for</span> i =1:length(planes(:,1))-1
+    <span class="keyword">if</span> i ~= ip1 &amp;&amp; i ~=ip2 &amp;&amp; i~=ntp
+        temp = calc_plane_intersection(planes(ip1,:),<span class="keyword">...</span>
+            planes(ip2,:),<span class="keyword">...</span>
+            planes(i,:));
+        <span class="keyword">if</span> ~isempty(temp)
+            bool =1;
+            <span class="keyword">for</span> h = 1:length(planes(:,1))
+                <span class="keyword">if</span> h~=ip1 &amp;&amp; h~=ip2 &amp;&amp; h~=i
+                    valid = (planes(h,1:3)*temp)+planes(h,4)&gt;0;
+                    bool = bool*valid;
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            <span class="keyword">if</span> bool ==1
+                vert = [vert;temp'];
+                set_new_lines = [set_new_lines;ip1,i,ip2;ip2,i,ip1];
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Calculating the boundaries of the wrench feasible workspace
+% Author : Jordan M. Longval
+
+%% Initialising
+clear; clc; close all;
+
+addpath('/home/jordan/Documents/Memoire_figure_git/3DDL/functions');
+
+% Setting the arbitrary values
+R     = 1;         % m
+r     = 0.2;       % m
+alpha = 0;         % rad
+rc    = 0.04;         % m
+pc  = pi/6;      % rad
+hc    = 0.5;         % m
+
+
+% Setting the minimum and maximum heigth
+zmin = 1;          % m
+zmax = 10;         % m
+
+% Range of values for the external wrench and the mass
+Mx = [-2 2];     % Nm
+My = [2 6];      % Nm
+Mz = [1 1.5];    % Nm
+fx = [-6 2];     % N
+fy = [4 8];      % N
+fz = 0;          % N
+m  = 30;         % kg
+
+% Defining all the possible combinations of wrenches
+wrench_comb = [];
+for a = 1:length(fx)
+    for b =1:length(fy)
+        for c = 1:length(fz)
+            for d = 1:length(Mx)
+                for e = 1:length(My)
+                    for f = 1:length(Mz)
+                        wrench_comb = [wrench_comb;...
+                            fx(a),fy(b),fz(c),Mx(d),My(e),Mz(f)];
+                    end
+                end
+            end
+        end
+    end
+end
+
+zr = [zmin,zmax];
+
+%% Calculating the WFW
+[corners,volume,K] = WFW_Calculator(R,r,alpha,rc,pc,hc,m,wrench_comb,zr);
+
+
+%% Plotting the whole WFW
+fig1 = figure;
+% plot3(points(:,1),points(:,2),points(:,3),'*r');
+points = corners(:,4:6);
+minx = 1.1*min(points(:,1));
+maxx = 1.1*max(points(:,1));
+miny = 1.1*min(points(:,2));
+maxy = 1.1*max(points(:,2));
+axis([minx maxx miny maxy 0.9*zmin 1.1*zmax])
+hold on;
+trh = trisurf(K,points(:,1),points(:,2),points(:,3));
+trh.FaceColor = [0.2 0.2 1];
+trh.FaceAlpha = 0.5;
+trh.LineWidth = 2;
+% Print projections for better view
+proj_z = [points(:,1),points(:,2),ones(length(points(:,1)),1)*1.1*zmax];
+Kpz = convhull(proj_z(:,1),proj_z(:,2));
+plot3(points(Kpz,1),points(Kpz,2),1.1*zmax*ones(length(Kpz),1),'kREPLACE_WITH_DASH_DASH');
+proj_x = [ones(length(points(:,1)),1)*maxx,points(:,2),points(:,3)];
+Kpx = convhull(proj_x(:,2),proj_x(:,3));
+plot3(maxx*ones(length(Kpx),1),points(Kpx,2),points(Kpx,3),'kREPLACE_WITH_DASH_DASH');
+proj_y = [points(:,1),ones(length(points(:,1)),1)*miny,points(:,3)];
+Kpy = convhull(proj_y(:,1),proj_y(:,3));
+plot3(points(Kpy,1),miny*ones(length(Kpy),1),points(Kpy,3),'kREPLACE_WITH_DASH_DASH');
+
+set (gca,'Ydir','reverse');
+set (gca,'Zdir','reverse');
+grid on;
+xlabel('xlabel');
+ylabel('ylabel');
+zlabel('zlabel');
+view(-59,22);
+set(gcf,'renderer','Painters')
+print -dsvg complet1.svg
+% 
+%% Plotting the first step
+% % Printing the first part (base)
+% % I have to print all of the planes. 
+% x = [minx maxx];
+% fig2 = figure;
+% for i =1:length(planes(:,1))
+%     y = (-1/planes(i,2))*(planes(i,1)*x+planes(i,3)*zmin+planes(i,4));
+%     lh(i)= plot3(x, y, [zmin,zmin],'-k');
+%     hold on;
+% end
+% axis([minx maxx miny maxy 0.9*zmin 1.1*zmax])
+% set (gca,'Ydir','reverse');
+% set (gca,'Zdir','reverse');
+% grid on;
+% xlabel('xlabel');
+% ylabel('ylabel');
+% zlabel('zlabel');
+% view(-59,22);
+% set(gcf,'renderer','Painters')
+% print -dsvg top_lines.svg
+% 
+% 
+% % Finding the good points 
+% fig3 = figure;
+% proj_z = [points(:,1),points(:,2),ones(length(points(:,1)),1)*zmin];
+% Kpz = convhull(proj_z(:,1),proj_z(:,2));
+% plot3(points(Kpz,1),points(Kpz,2),zmin*ones(length(Kpz),1),'*b');
+% % ph = patch(points(Kpz,1),points(Kpz,2),zmin*ones(length(Kpz),1),[0.2,0.2,1]);
+% % ph.FaceAlpha =0.5;
+% % ph.LineWidth = 2;
+% view(3);
+% axis([minx maxx miny maxy 0.9*zmin 1.1*zmax])
+% set (gca,'Ydir','reverse');
+% set (gca,'Zdir','reverse');
+% grid on;
+% xlabel('xlabel');
+% ylabel('ylabel');
+% zlabel('zlabel');
+% view(-59,22);
+% set(gcf,'renderer','Painters')
+% hold on;
+% t = linspace(zmin-1,zmax+1,10);
+% pii = p_inter_ini;
+% for i =1:length(pii(:,1))
+%     pxy(:,:,i) = [planes(pii(i,1),1) planes(pii(i,1),2);...
+%                    planes(pii(i,2),1) planes(pii(i,2),2)]\...
+%                    -[planes(pii(i,1),3)*t+planes(pii(i,1),4);...
+%                      planes(pii(i,2),3)*t+planes(pii(i,2),4)];
+%    plot3(pxy(1,:,i),pxy(2,:,i),t,'-k');
+% end
+
+% Finding the points that are on each of the lines
+
+
+
+
+
+% 
+% % From the list of points which was found previously, Determing if the
+% % planes which give rise to this point intersection with any other planes
+% tic
+% for i =1:length(p_inter_ini(:,1))
+%     for j =1:length(planes(:,1))-2
+%         if j~=p_inter_ini(i,1) && j~=p_inter_ini(i,2)
+%             temp = calc_plane_intersection(planes(p_inter_ini(i,1),:),...
+%                 planes(p_inter_ini(i,2),:),...
+%                 planes(j,:));
+%             if ~isempty(temp)
+%                 bool =1;
+%                 for h = 1:length(planes(:,1))
+%                     if h~=p_inter_ini(i,1) && h~=p_inter_ini(i,2) && h~=j
+%                         valid = (planes(h,1:3)*temp)+planes(h,4)>0;
+%                         bool = bool*valid;
+%                     end
+%                 end
+%                 if bool ==1
+%                     n_p_o_l =[n_p_o_l;p_inter_ini(i,1),p_inter_ini(i,2),h,temp'];
+%                 end
+%             end
+% 
+%         end
+%     end
+% end
+% 
+% % Defining the list of all projection lines at the plane z =zmax
+% L_l_e = [];
+% for i =1:length(wrench_comb(:,1))
+%     L_l_e = [L_l_e;Calc_lines(alpha, R, r, rc, phic, ...
+%         hc,m,zmax,wrench_comb(i,:))];%,...
+%     %rhomax,rhomin,fmin,fmax)];
+% end
+% 
+% % Determining the points on the z=zmin plane which are good.
+% p_inter_end = [];
+% for i =1:length(L_l_e(:,1))-1
+%     for j=i+1:length(L_l_e(:,1))
+%         temp = Calc_intersection(L_l_e(i,:), L_l_e(j,:));
+%         bool = 1;
+%         for k =1:length(L_l_e(:,1))
+%             if k ~= i && k~= j
+%                 verif = L_l_e(k,1)*temp(1)+L_l_e(k,2)*temp(2)+L_l_e(k,3) > 0;
+%                 bool = bool*verif;
+%             end
+%         end
+%         if bool ==1
+%             p_inter_end = [p_inter_end;i,j,temp];
+% 
+%         end
+%     end
+% end
+% t2 = toc
+% vertices = [p_inter_ini(:,3:4),ones(length(p_inter_ini(:,1)),1)*zmin;];
+% 
+% if ~isempty(n_p_o_l)
+%    vertices = [vertices;n_p_o_l(:,4:6)];
+% end
+% 
+% if ~isempty(p_inter_end)
+%     vertices = [vertices;...
+%                 p_inter_end(:,3:4),ones(length(p_inter_end(:,1)),1)*zmax];
+% end
+% vertices
+% [K1,v1] = convhulln(vertices);
+% 
+% hold on;
+% plot3(vertices(:,1),vertices(:,2),vertices(:,3),'*b');
+%%%%%%%%% PLANE METHOD %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% tic
+% int = [];
+% count = 0;
+% for i=1:length(planes(:,1))-2
+%     for j=i+1:length(planes(:,1))-1
+%         for k =j+1:length(planes(:,1))
+%             temp = calc_plane_intersection(planes(i,:),planes(j,:),planes(k,:));
+%             if ~isempty(temp)
+%                   count = count+1;
+%                 bool = 1;
+%                 for h =1:length(planes(:,1))
+%                     if h~=i && h~=j && h~=k
+%                         valid = (planes(h,1:3)*temp)+planes(h,4)>0;
+%                         bool = bool*valid;
+%                     end
+%                 end
+%                 if bool == 1
+%                     int = [int;...
+%                         i,j,k,temp'];
+%                 end
+%             end
+%         end
+%     end
+% formatSpec = '%3.4f percent complete\n';
+% fprintf(formatSpec,(i/(length(planes(:,1))-2))*100);
+% end
+% int = sortrows(int,6)
+% t2 = toc
+%
+function [vert, set_new_lines] = branching(ip1,ip2,ntp,planes)
+vert = [];
+set_new_lines = [];
+for i =1:length(planes(:,1))-1
+    if i ~= ip1 && i ~=ip2 && i~=ntp
+        temp = calc_plane_intersection(planes(ip1,:),...
+            planes(ip2,:),...
+            planes(i,:));
+        if ~isempty(temp)
+            bool =1;
+            for h = 1:length(planes(:,1))
+                if h~=ip1 && h~=ip2 && h~=i
+                    valid = (planes(h,1:3)*temp)+planes(h,4)>0;
+                    bool = bool*valid;
+                end
+            end
+            if bool ==1
+                vert = [vert;temp'];
+                set_new_lines = [set_new_lines;ip1,i,ip2;ip2,i,ip1];
+            end
+        end
+    end
+end
+end
+
+
+##### SOURCE END #####
+--></body></html>

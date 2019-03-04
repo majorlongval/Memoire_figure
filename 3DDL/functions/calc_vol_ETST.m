@@ -1,6 +1,6 @@
-function vol = calc_vol_ETST(alpha, R, r, r_c, phi_c, ...
+function [K,vol,l_seg_new] = calc_vol_ETST(alpha, R, r, r_c, phi_c, ...
     h_c, tx, ty, tz, m, Mx,...
-    My, Mz,max_z)
+    My, Mz,max_z, discret_z)
 %CALC_VOL_ETST Calculates the volume of the static workspace when an
 %external wrench is applied on the end-effector
 %   alpha: construction angle
@@ -18,9 +18,8 @@ function vol = calc_vol_ETST(alpha, R, r, r_c, phi_c, ...
 g = 9.81;
 Tz = m*g + tz;
 
-zr = linspace(0,max_z,500);
+zr = linspace(0,max_z,discret_z);
 dz = zr(2)-zr(1);
-% Calculating the sins and cosines for faster calc speed
 
 [ay,az,ak,bx,bz,bk,cx,cy,ck,dx,dk,ey,ek,hz,hk] = ...
     calc_coeff(alpha, R, r, r_c, phi_c, h_c);
@@ -34,7 +33,8 @@ for j =1:length(zr)
 end
 % Calcul de tous les points d'intersection
 vol = 0;
-for j = 1:(length(zr)-1)
+l_seg_new = [];
+for j = 1:(length(zr))
     inter(1,:,1,j) = [A(1,j) B(1,j);A(2,j) B(2,j)]\-[C(1,j);C(2,j)];
     inter(2,:,1,j) = [A(1,j) B(1,j);A(3,j) B(3,j)]\-[C(1,j);C(3,j)];
     inter(3,:,1,j) = [A(1,j) B(1,j);A(4,j) B(4,j)]\-[C(1,j);C(4,j)];
@@ -72,7 +72,7 @@ for j = 1:(length(zr)-1)
     inter(5,:,6,j) = [A(6,j) B(6,j);A(5,j) B(5,j)]\-[C(6,j);C(5,j)];
     
     l_seg = [];
-    l_seg_new = [];
+    l_seg_ord = [];
     for i =1:6
         [ord_inter(:,1,i,j),ord_inter(:,2,i,j)] = ...
             vec_acw_order_lin(inter(:,1,i,j),inter(:,2,i,j));
@@ -85,20 +85,16 @@ for j = 1:(length(zr)-1)
         end
     end
     l_seg = unique(l_seg,'rows');
-%
+
     if ~isempty(l_seg)
-    [l_seg_new(:,1,j),l_seg_new(:,2,j)] = vec_acw_order(l_seg(:,1),l_seg(:,2));
-%     plot3([l_seg_new(:,1,j);l_seg_new(1,1,j)],...
-%           [l_seg_new(:,2,j);l_seg_new(1,2,j)],...
-%           ones(length(l_seg_new(:,1,j))+1,1)*zr(j),'-r');
-    hold on;
-    vol =vol + polyarea(l_seg_new(:,1,j),l_seg_new(:,2,j))*dz;
-    else
-        vol = vol + 0;
+    [l_seg_ord(:,1),l_seg_ord(:,2)] = vec_acw_order(l_seg(:,1),l_seg(:,2));
+    l_seg_new = [l_seg_new;[l_seg_ord,ones(length(l_seg_ord(:,1)),1)*zr(j)]];
+%     else
+%         vol = vol + 0;
     end
-%     l_seg_res{j} = l_seg_new;
+%     l_seg_new{j} = l_seg_ord;
      
 end
-% set(gca,'Zdir','reverse');
+[K,vol] = convhulln(l_seg_new);
 end
 

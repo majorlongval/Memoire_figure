@@ -1,0 +1,18 @@
+THIS EXPERIMENT HAD MOMENTS applied to the end effector
+
+The givens were the following : height was at 2 m from the motors and at 2.5 m from the motors.
+
+MASS WAS ADDED ON THE RADIUS of the end effector in order to apply moments to the end-effector.
+
+Mass used to add moments: 376 g
+
+Equivalent moments : 
+Mx = [-0.2*.376*9.81*cos(pi/4),0.2*.376*9.81*cos(pi/4)];                    % Nm
+My = [-0.2*.376*9.81*cos(pi/4),0.2*.376*9.81*cos(pi/4)];  (THE MASS IS PUT IN THE MIDDLE OF EACH QUADRANT)
+
+total mass of the end effector with cell phone 0.532+0.1741 (This was applied at the centre of mass)
+
+the experiment went to 90 % of the total WS.
+
+MANY REPETITIONS WERE MADE IN ORDER TO TEST EACH ONE OF THE 4 points .
+

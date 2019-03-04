@@ -1,6 +1,6 @@
 clear all; close all; clc;
 L = 5;
-l = 1;
+l = 0.8;
 ay = 0.2;
 cy = -0.2;
 cx = 0.1;
@@ -56,8 +56,8 @@ theta_2 = sqrt(d_12^2+d_22^2);
 theta_3 = sqrt(d_13^2+d_23^2);
 
 A1 = (ry*theta_1)+g*Psi_1;
-A2 = (ry*theta_2^2/theta_2)-g*Psi_2;
-A3 = (ry*theta_3^2/theta_3)-g*Psi_3;
+A2 = (ry*theta_2)-g*Psi_2;
+A3 = (ry*theta_3)-g*Psi_3;
 % 
 B1 = 15*ry*(abs(Omega_1)+abs(Psi_1)+2*ry*k*abs(B_1))/8;
 B2 = 15*ry*(abs(Omega_2)+abs(Psi_2)+2*ry*k*abs(B_2))/8;
@@ -68,3 +68,5 @@ C2 = 10*sqrt(3)*ry*(abs(Omega_2)+abs(Psi_2));
 C3 = 10*sqrt(3)*ry*(abs(Omega_3)+abs(Psi_3));
 
 T1 = roots([A1 B1 C1]);
+T2 = roots([A2 B2 C2]);
+T3 = roots([A3 B3 C3]);

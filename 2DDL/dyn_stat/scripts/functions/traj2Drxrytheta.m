@@ -1,20 +1,11 @@
 %% Traj simp
 
-function [pos, acc] = traj2Dabtheta(pos_ini, a, b, theta, omega)
+function [pos, acc] = traj2Drxry(pos_ini, rx, ry, omega, phix, phiy)
 % TRAJ2DRXRYTHETA returns position and acceleation vectors of a trajectory
 % defined by pos_ini, rx,ry, thera and omega. The transition time is the minimum
 % time for which no tension is negative. The trajectory is planed as
 % follows: transition to ellipse, three full turns and transition back to
 % rest.
-
-%% Calculating the values for a and b
-
-%% Calculating the values for phix and phiy
-
-phix = atan2(b*sin(theta)*sin(phi)-a*cos(theta)*cos(phi),...
-              a*cos(theta)*sin(phi)+b*sin(theta)*cos(phi));
-phiy = atan2(a*sin(theta)*cos(phi)+b*cos(theta)*sin(phi),...
-               b*cos(theta)*cos(phi)-a*sin(theta)*sin(phi));
            
 rx  = 
 %% Discretising time

@@ -70,19 +70,7 @@ for k =1:6
     [ord_inter(:,1,k),ord_inter(:,2,k)] = vec_acw_order_lin(inter(1,:,k)',...
                                                         inter(2,:,k)');
 end
-% col_ar = {'*r','*g','*b','*k','*m'};
-% for i =1:length(ord_inter(:,1,1))
-%     plot(ord_inter(i,1,1),ord_inter(i,2,1),col_ar{i});
-%     hold on;
-%     %plot(ord_inter(i,1,2),ord_inter(i,2,2),col_ar{i});
-%     plot(ord_inter(i,1,3),ord_inter(i,2,3),col_ar{i});
-% end
-% hold on;
-% plot(ord_inter(:,1,2),ord_inter(:,2,2),'*r');
-% plot(ord_inter(:,1,3),ord_inter(:,2,3),'*r');
-% plot(ord_inter(:,1,4),ord_inter(:,2,4),'*r');
-% plot(ord_inter(:,1,5),ord_inter(:,2,5),'*r');
-% plot(ord_inter(:,1,6),ord_inter(:,2,6),'*r');
+
 l_seg = [];
 
 for i = 1:6
