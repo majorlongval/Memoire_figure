@@ -3,7 +3,7 @@ function pii = WFW_at_h(alpha, R, r, rc, phic, hc,m,wc,z)
 %   Detailed explanation goes here
 
 % Calculating all the possible planes
-addpath('/home/jordan/Documents/Memoire_figure_git/3DDL/functions');
+addpath('C:\Users\jorda\OneDrive\Desktop\Memoire_figure_git\Memoire_figure\3DDL\functions');
 
 
 % Defining the list of all projection lines at the plane z =zmin
