@@ -2,7 +2,7 @@
  clear;
  close all;
 
-addpath('C:\Users\jorda\OneDrive\Desktop\Memoire_figure_git\Memoire_figure\3DDL\functions');
+addpath('C:\Users\jorda\OneDrive\Desktop\Memoire\Memoire_figure\3DDL\functions');
 
 R = 0.7033;
 r = 0.2;

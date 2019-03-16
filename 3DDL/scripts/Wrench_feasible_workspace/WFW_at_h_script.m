@@ -1,6 +1,4 @@
-clear all; close all; clc;
-
-
+addpath('C:\Users\jorda\OneDrive\Desktop\Memoire\Memoire_figure\3DDL\functions');
 
 alpha  = pi/6;     % rad
 R      = 0.7033;   % m 
@@ -52,22 +50,23 @@ pii_2 = WFW_at_h(alpha, R, r, rc, phic, hc,m,wc,z2);
 
 
 % Plotting the points 
-figure;
-grid on;
-hold;
+% figure;
+% grid on;
+% hold;
+
+% plot3(pii_0(K0,1),pii_0(K0,2),pii_0(K0,3),'-g');
+% plot3(pii_1(K1,1),pii_1(K1,2),pii_1(K1,3),'-b');
+% plot3(pii_2(K2,1),pii_2(K2,2),pii_2(K2,3),'-r');
+% plot3(bc1(1),bc1(2),bc1(3),'*b');
+% plot3(bc2(1),bc2(2),bc2(3),'*r');
+% plot3(bc0(1),bc0(2),bc0(3),'*g');
+
+
+Plotting the other points of the trajectory
 n1 = length(pii_1(:,1));
 bc1 = mean(pii_1);
 bc2 = mean(pii_2);
 bc0 = mean(pii_0);
-plot3(pii_0(K0,1),pii_0(K0,2),pii_0(K0,3),'-g');
-plot3(pii_1(K1,1),pii_1(K1,2),pii_1(K1,3),'-b');
-plot3(pii_2(K2,1),pii_2(K2,2),pii_2(K2,3),'-r');
-plot3(bc1(1),bc1(2),bc1(3),'*b');
-plot3(bc2(1),bc2(2),bc2(3),'*r');
-plot3(bc0(1),bc0(2),bc0(3),'*g');
-
-
-% Plotting the other points of the trajectory
 eta = 0.6:0.1:0.9;
 points_0 = [];
 points_1 = [];
@@ -93,7 +92,7 @@ grid on;
 hold on;
 plot3(points(:,1),points(:,2),points(:,3),'--k');
 
-save points_funkytown.mat setup_points -v4
+% save points_funkytown.mat setup_points -v4
 function wc = wrench_comb(fx,fy,fz,Mx,My,Mz)
 wc = [];
 for a = 1:length(fx)
