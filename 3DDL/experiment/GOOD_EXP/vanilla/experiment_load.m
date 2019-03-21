@@ -3,90 +3,185 @@ close all; clc;
 % WFW_at_h_script;
 addpath('C:\Users\jorda\OneDrive\Desktop\Memoire\Memoire_figure\3DDL\functions');
 
+
+set(groot, 'defaultFigureRenderer', 'painters')
 % THE IMU DATA SHOULD BE LOADED. THE BEST WAY IS JUST TO DRAG AND DROP 
 DS = experiment_loader(VANILLAIMU,10);
 % LOADING THE DATA FROM THE SIMULINK MODEL
 load('VANILLA2.mat');
 
-figure
-
-plot(opvar(1,1:100:end),opvar(2,1:100:end)); grid on; hold on;
-plot(opvar(1,1:100:end),opvar(3,1:100:end));
-plot(opvar(1,1:100:end),opvar(4,1:100:end));
 
 figure
-plot3(opvar(2,1:100:end),opvar(3,1:100:end),opvar(4,1:100:end));
 
-figure;
-plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-plot(DS.time, DS.pitch-mean(DS.pitch));
-plot(DS.time, DS.yaw-mean(DS.yaw));
+stime = 40;
+etime = 210;
 
-st = 81;
-dv = {}
-for j =1:4
-for i =1:5
-[f,power,sind,durind] = fft_pallier(DS,st,4);
-    dv{i,1,j} = f;
-    dv{i,2,j} = power;
-    dv{i,3,j} = sind;
-    dv{i,4,j} = durind;
-    if j == 4
-      plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
-    else
-  plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
-    end
-  st = st+8;
-end
-dv{i+1,1,j} = f;
-temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
-dv{i+1,2,j} = mean(temp);
-end
+sindex = round(stime/opvar(1,end)*length(opvar(1,:)));
+eindex = round(etime/opvar(1,end)*length(opvar(1,:)));
+
+
+plot3(opvar(2,sindex:100:eindex),-opvar(3,sindex:100:eindex),2*ones(1,length(opvar(3,sindex:100:eindex))),'-b');
+hold on; grid on;
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+set(gca,'YDir','reverse');
+
+v1 = [0 ;-0.7033; 2];
+Qs = [cosd(120) -sind(120) 0;...
+      sind(120) cosd(120) 0;...
+      0 0 1];
+v2 = Qs*v1; v3 = Qs*v2;
+extreme_points = [v1,v2,v3,v1];
+plot3(extreme_points(1,:),extreme_points(2,:),extreme_points(3,:),'-g');
+
+saveas(gca,'pos_vanilla','epsc');
 figure
-for j = 1:4
-    subplot(5,1,j)
-    plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-    axis([0 5 0 max(dv{i+1,2,j})]);
+
+
+
+p1 = plot(opvar(1,sindex:100:eindex),opvar(2,sindex:100:eindex),'-b'); grid on; hold on;
+p2 = plot(opvar(1,sindex:100:eindex),-opvar(3,sindex:100:eindex),'-r');
+p3 = plot(opvar(1,sindex:100:eindex),opvar(4,sindex:100:eindex)+0.317,'-k');
+
+axis([stime etime -0.7 2.1]);
+xlabel('time');
+ylabel('position');
+
+
+
+% MakingMarks
+first_t = 57
+for i = 1:4
+    first_e_t = first_t+3;
+    plot([first_t,first_t],[-0.7,2.1],'--k');
+    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+    text(first_t,0.5*(-0.7+2.1),...
+        strcat(num2str(i),num2str(i),num2str(i)),...
+        'HorizontalAlignment','right')
+    first_t = first_t + 8.3;
 end
 
 
-figure;
-plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-plot(DS.time, DS.pitch-mean(DS.pitch));
-plot(DS.time, DS.yaw-mean(DS.yaw));
+first_t = 98
+for i = 1:4
+    first_e_t = first_t+3;
+    plot([first_t,first_t],[-0.7,2.1],'--k');
+    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+    text(first_t,0.5*(-0.7+2.1),...
+        strcat(num2str(i+4),num2str(i+4),num2str(i+4)),...
+        'HorizontalAlignment','right')
+    first_t = first_t + 8.3;
+end
 
-st = 78;
-dvt = {}
-for j =1:4
-for i =1:5
-[f,power,sind,durind] = fft_pallier(DS,st,4);
-    dv{i,1,j} = f;
-    dv{i,2,j} = power;
-    dv{i,3,j} = sind;
-    dv{i,4,j} = durind;
-    if j == 4
-      plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
-    else
-  plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
-    end
-  st = st+8;
+num_alpha = {'a','b','c','d','e','f','g','h'};
+first_t = 138
+for i = 1:4
+    first_e_t = first_t+3;
+    plot([first_t,first_t],[-0.7,2.1],'--k');
+    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+    text(first_t,0.5*(-0.7+2.1),...
+        strcat(num_alpha{i},num_alpha{i},num_alpha{i}),...
+        'HorizontalAlignment','right')
+    first_t = first_t + 8.3;
 end
-dv{i+1,1,j} = f;
-temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
-dv{i+1,2,j} = mean(temp);
+
+first_t = 178
+for i = 1:4
+    first_e_t = first_t+3;
+    plot([first_t,first_t],[-0.7,2.1],'--k');
+    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+    text(first_t,0.5*(-0.7+2.1),...
+        strcat(num_alpha{i+4},num_alpha{i+4},num_alpha{i+4}),...
+        'HorizontalAlignment','right')
+    first_t = first_t + 8.3;
 end
-figure
-for j = 1:4
-    subplot(5,1,j)
-    plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-    axis([0 5 0 max(dv{i+1,2,j})]);
-    xlabel('frequency');
-    ylabel('power');
-end
+
+
+l1 = legend([p1,p2,p3],'x','y','z');
+l1.Location = 'NorthEastOutside';
+
+
+
+
+saveas(gca,'pos_time_vanilla','epsc');
+%
+% figure
+% plot3(opvar(2,1:100:end),-opvar(3,1:100:end),opvar(4,1:100:length()+0.317);
+% set(gca,'YDir','reverse');
+% set(gca,'ZDir','reverse');
+% 
+% figure;
+% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
+% plot(DS.time, DS.pitch-mean(DS.pitch));
+% plot(DS.time, DS.yaw-mean(DS.yaw));
+% 
+% st = 81;
+% dv = {}
+% for j =1:4
+% for i =1:5
+% [f,power,sind,durind] = fft_pallier(DS,st,4);
+%     dv{i,1,j} = f;
+%     dv{i,2,j} = power;
+%     dv{i,3,j} = sind;
+%     dv{i,4,j} = durind;
+%     if j == 4
+%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+%     else
+%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+%     end
+%   st = st+8;
+% end
+% dv{i+1,1,j} = f;
+% temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% dv{i+1,2,j} = mean(temp);
+% end
+% figure
+% for j = 1:4
+%     subplot(5,1,j)
+%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+%     axis([0 5 0 max(dv{i+1,2,j})]);
+% end
+% 
+% 
+% figure;
+% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
+% plot(DS.time, DS.pitch-mean(DS.pitch));
+% plot(DS.time, DS.yaw-mean(DS.yaw));
+% 
+% st = 78;
+% dvt = {}
+% for j =1:4
+% for i =1:5
+% [f,power,sind,durind] = fft_pallier(DS,st,4);
+%     dv{i,1,j} = f;
+%     dv{i,2,j} = power;
+%     dv{i,3,j} = sind;
+%     dv{i,4,j} = durind;
+%     if j == 4
+%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+%     else
+%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+%     end
+%   st = st+8;
+% end
+% dv{i+1,1,j} = f;
+% temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% dv{i+1,2,j} = mean(temp);
+% end
+% figure
+% for j = 1:4
+%     subplot(5,1,j)
+%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+%     axis([0 5 0 max(dv{i+1,2,j})]);
+%     xlabel('frequency');
+%     ylabel('power');
+% end
 
 %%%%%%%%%%%%%%%%%% GENERAL IDEA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{
