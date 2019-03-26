@@ -1,7 +1,7 @@
 close all; clc;
 %Desired experimental data
 % WFW_at_h_script;
-addpath('C:\Users\jorda\OneDrive\Desktop\Memoire\Memoire_figure\3DDL\functions');
+% addpath('C:\Users\jorda\OneDrive\Desktop\Memoire\Memoire_figure\3DDL\functions');
 
 
 set(groot, 'defaultFigureRenderer', 'painters')
@@ -20,133 +20,145 @@ sindex = round(stime/opvar(1,end)*length(opvar(1,:)));
 eindex = round(etime/opvar(1,end)*length(opvar(1,:)));
 
 
-plot3(opvar(2,sindex:100:eindex),-opvar(3,sindex:100:eindex),2*ones(1,length(opvar(3,sindex:100:eindex))),'-b');
-hold on; grid on;
-xlabel('x');
-ylabel('y');
-zlabel('z');
+% plot3(opvar(2,sindex:100:eindex),-opvar(3,sindex:100:eindex),2*ones(1,length(opvar(3,sindex:100:eindex))),'-b');
+% hold on; grid on;
+% xlabel('x');
+% ylabel('y');
+% zlabel('z');
+% 
+% set(gca,'YDir','reverse');
+% 
+% v1 = [0 ;-0.7033; 2];
+% Qs = [cosd(120) -sind(120) 0;...
+%       sind(120) cosd(120) 0;...
+%       0 0 1];
+% v2 = Qs*v1; v3 = Qs*v2;
+% extreme_points = [v1,v2,v3,v1];
+% plot3(extreme_points(1,:),extreme_points(2,:),extreme_points(3,:),'-g');
+% 
+% % saveas(gca,'pos_vanilla','epsc');
+% figure
+% 
+% 
+% 
+% p1 = plot(opvar(1,sindex:100:eindex),opvar(2,sindex:100:eindex),'-b'); grid on; hold on;
+% p2 = plot(opvar(1,sindex:100:eindex),-opvar(3,sindex:100:eindex),'-r');
+% p3 = plot(opvar(1,sindex:100:eindex),opvar(4,sindex:100:eindex)+0.317,'-k');
+% 
+% axis([stime etime -0.7 2.1]);
+% xlabel('time');
+% ylabel('position');
+% 
+% 
+% 
+% % MakingMarks
+% first_t = 57
+% for i = 1:4
+%     first_e_t = first_t+3;
+%     plot([first_t,first_t],[-0.7,2.1],'--k');
+%     plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+%     text(first_t,0.5*(-0.7+2.1),...
+%         strcat(num2str(i),num2str(i),num2str(i)),...
+%         'HorizontalAlignment','right')
+%     first_t = first_t + 8.3;
+% end
+% 
+% 
+% first_t = 98
+% for i = 1:4
+%     first_e_t = first_t+3;
+%     plot([first_t,first_t],[-0.7,2.1],'--k');
+%     plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+%     text(first_t,0.5*(-0.7+2.1),...
+%         strcat(num2str(i+4),num2str(i+4),num2str(i+4)),...
+%         'HorizontalAlignment','right')
+%     first_t = first_t + 8.3;
+% end
+% 
+% num_alpha = {'a','b','c','d','e','f','g','h'};
+% first_t = 138
+% for i = 1:4
+%     first_e_t = first_t+3;
+%     plot([first_t,first_t],[-0.7,2.1],'--k');
+%     plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+%     text(first_t,0.5*(-0.7+2.1),...
+%         strcat(num_alpha{i},num_alpha{i},num_alpha{i}),...
+%         'HorizontalAlignment','right')
+%     first_t = first_t + 8.3;
+% end
+% 
+% first_t = 178
+% for i = 1:4
+%     first_e_t = first_t+3;
+%     plot([first_t,first_t],[-0.7,2.1],'--k');
+%     plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
+%     text(first_t,0.5*(-0.7+2.1),...
+%         strcat(num_alpha{i+4},num_alpha{i+4},num_alpha{i+4}),...
+%         'HorizontalAlignment','right')
+%     first_t = first_t + 8.3;
+% end
+% 
+% 
+% l1 = legend([p1,p2,p3],'x','y','z');
+% l1.Location = 'NorthEastOutside';
+% 
+% 
+% 
 
-set(gca,'YDir','reverse');
-
-v1 = [0 ;-0.7033; 2];
-Qs = [cosd(120) -sind(120) 0;...
-      sind(120) cosd(120) 0;...
-      0 0 1];
-v2 = Qs*v1; v3 = Qs*v2;
-extreme_points = [v1,v2,v3,v1];
-plot3(extreme_points(1,:),extreme_points(2,:),extreme_points(3,:),'-g');
-
-saveas(gca,'pos_vanilla','epsc');
-figure
-
-
-
-p1 = plot(opvar(1,sindex:100:eindex),opvar(2,sindex:100:eindex),'-b'); grid on; hold on;
-p2 = plot(opvar(1,sindex:100:eindex),-opvar(3,sindex:100:eindex),'-r');
-p3 = plot(opvar(1,sindex:100:eindex),opvar(4,sindex:100:eindex)+0.317,'-k');
-
-axis([stime etime -0.7 2.1]);
-xlabel('time');
-ylabel('position');
-
-
-
-% MakingMarks
-first_t = 57
-for i = 1:4
-    first_e_t = first_t+3;
-    plot([first_t,first_t],[-0.7,2.1],'--k');
-    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
-    text(first_t,0.5*(-0.7+2.1),...
-        strcat(num2str(i),num2str(i),num2str(i)),...
-        'HorizontalAlignment','right')
-    first_t = first_t + 8.3;
-end
-
-
-first_t = 98
-for i = 1:4
-    first_e_t = first_t+3;
-    plot([first_t,first_t],[-0.7,2.1],'--k');
-    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
-    text(first_t,0.5*(-0.7+2.1),...
-        strcat(num2str(i+4),num2str(i+4),num2str(i+4)),...
-        'HorizontalAlignment','right')
-    first_t = first_t + 8.3;
-end
-
-num_alpha = {'a','b','c','d','e','f','g','h'};
-first_t = 138
-for i = 1:4
-    first_e_t = first_t+3;
-    plot([first_t,first_t],[-0.7,2.1],'--k');
-    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
-    text(first_t,0.5*(-0.7+2.1),...
-        strcat(num_alpha{i},num_alpha{i},num_alpha{i}),...
-        'HorizontalAlignment','right')
-    first_t = first_t + 8.3;
-end
-
-first_t = 178
-for i = 1:4
-    first_e_t = first_t+3;
-    plot([first_t,first_t],[-0.7,2.1],'--k');
-    plot([first_e_t,first_e_t],[-0.7,2.1],'--k');
-    text(first_t,0.5*(-0.7+2.1),...
-        strcat(num_alpha{i+4},num_alpha{i+4},num_alpha{i+4}),...
-        'HorizontalAlignment','right')
-    first_t = first_t + 8.3;
-end
-
-
-l1 = legend([p1,p2,p3],'x','y','z');
-l1.Location = 'NorthEastOutside';
-
-
-
-
-saveas(gca,'pos_time_vanilla','epsc');
-%
+% saveas(gca,'pos_time_vanilla','epsc');
+% %
 % figure
 % plot3(opvar(2,1:100:end),-opvar(3,1:100:end),opvar(4,1:100:length()+0.317);
 % set(gca,'YDir','reverse');
 % set(gca,'ZDir','reverse');
 % 
-% figure;
-% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-% plot(DS.time, DS.pitch-mean(DS.pitch));
-% plot(DS.time, DS.yaw-mean(DS.yaw));
-% 
-% st = 81;
-% dv = {}
-% for j =1:4
-% for i =1:5
-% [f,power,sind,durind] = fft_pallier(DS,st,4);
-%     dv{i,1,j} = f;
-%     dv{i,2,j} = power;
-%     dv{i,3,j} = sind;
-%     dv{i,4,j} = durind;
-%     if j == 4
-%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
-%     else
-%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
-%     end
-%   st = st+8;
-% end
-% dv{i+1,1,j} = f;
-% temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
-% dv{i+1,2,j} = mean(temp);
-% end
-% figure
-% for j = 1:4
-%     subplot(5,1,j)
-%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-%     axis([0 5 0 max(dv{i+1,2,j})]);
-% end
-% 
-% 
+figure;
+p1 = plot(DS.time, DS.roll-DS.roll(1),'-b'); hold on; grid on;
+p2 = plot(DS.time, DS.pitch-DS.pitch(1),'-r');
+p3 = plot(DS.time, DS.yaw-DS.yaw(1),'-k');
+
+st = 81;
+dv = {}
+for j =1:4
+for i =1:5
+    if i ~= 5
+[f,power,sind,durind] = fft_pallier(DS,st,3);
+    dv{i,1,j} = f;
+    dv{i,2,j} = power;
+    dv{i,3,j} = sind;
+    dv{i,4,j} = durind;
+    if j == 4
+      plot([DS.time(sind),DS.time(sind)],[-2 2],'--k');
+  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--k'); 
+    else
+  plot([DS.time(sind),DS.time(sind)],[-2 2],'--k');
+  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--k');
+    end
+    end
+  st = st+8;
+end
+dv{i+1,1,j} = f;
+temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+dv{i+1,2,j} = mean(temp);
+end
+axis([78 230 -2 1.5]);
+xlabel('x'); ylabel('y');
+l1 = legend([p1,p2,p3],'roll','pitch','yaw');
+l1.Location = 'NorthEastOutside';
+
+saveas(gca,'IMU_vanilla','epsc');
+
+figure
+for j = 1:4
+    subplot(4,1,j)
+    plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+     axis([0 5 0 0.5]);
+    grid on;
+    xlabel('freq'); ylabel('mag');
+    title(strcat('eta',num2str(j)));
+end
+
+saveas(gca,'IMU_vanilla_freq','epsc');
 % figure;
 % plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
 % plot(DS.time, DS.pitch-mean(DS.pitch));
@@ -358,18 +370,26 @@ end
 function [f,power,sind,durind] = fft_pallier(DS,stime,duree)
         sind = round(stime/DS.time(end)*length(DS.time));
         durind = round((duree)/DS.time(end)*length(DS.time));
-        rd = DS.roll(sind:sind+durind);
-        rp = DS.pitch(sind:sind+durind);
-        ry = DS.yaw(sind:sind+durind);
-        norm = sqrt(rd.^2+rp.^2+ry.^2);
+        rd = DS.roll(sind:sind+durind)-DS.roll(sind);
+        rp = DS.pitch(sind:sind+durind)-DS.pitch(sind);
+        ry = DS.yaw(sind:sind+durind)-DS.yaw(sind);
+        
+       rd = detrend(rd,'linear'); rp = detrend(rp,'linear'); ry = detrend(ry,'linear');
+        fftrd = fft(rd); fftrp = fft(rp); fftry = fft(ry);
+%         norm = sqrt(rd.^2+rp.^2+ry.^2);
 %         norm = norm-norm(1);
 %         norm = norm-mean(norm);
-        norm = detrend(norm,'linear');
+%         norm = detrend(norm,'linear');
         fs = DS.fs;
-        fftv = fft(norm);
-        n = length(norm);
+%         fftv = fft(norm);
+        n = length(rd);
         f = (0:n-1)*(fs/n);
-        power = abs(fftv).^2/n;
+        powerrd = abs(fftrd).^2/n%.^2/n;
+        powerrp = abs(fftrp).^2/n%.^2/n;
+        powerry = abs(fftry).^2/n%.^2/n;
+        power = powerrd+powerrp+powerry;
+        
+        
 
 end
 

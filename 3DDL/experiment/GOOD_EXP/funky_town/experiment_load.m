@@ -3,45 +3,100 @@ close all; clc;
 WFW_at_h_script;
 addpath('C:\Users\jorda\OneDrive\Desktop\Memoire\Memoire_figure\3DDL\functions');
 
+set(groot, 'defaultFigureRenderer', 'painters')
+
 % THE IMU DATA SHOULD BE LOADED. THE BEST WAY IS JUST TO DRAG AND DROP 
 DS = experiment_loader(funkytownIMU,10);
 % LOADING THE DATA FROM THE SIMULINK MODEL
 load('funky_town.mat');
 
 
+st_nf = 1;
+st_nf_index = round(st_nf/opvar(1,end)*length((opvar(1,:))));
+
+et_nf = 215;
+et_nf_index = round((et_nf/opvar(1,end))*length((opvar(1,:))));
+
+
 
 figure
-plot(opvar(1,1:100:end),opvar(2,1:100:end)); grid on; hold on;
-plot(opvar(1,1:100:end),opvar(3,1:100:end));
-plot(opvar(1,1:100:end),opvar(4,1:100:end));
+plot3(opvar(2,st_nf_index:100:et_nf_index),-opvar(3,st_nf_index:100:et_nf_index),2*ones(1,length(opvar(4,st_nf_index:100:et_nf_index))),'-b');
+K = convhull(pii_0(:,1),pii_0(:,2));
+hold on; grid on;
+plot3(pii_0(K,1),pii_0(K,2),pii_0(K,3),'-g');
+%set(gca,'YDir','reverse');
+set(gca,'ZDir','reverse');
+
+xlabel('x'); ylabel('y');
+
+view(0,-90);
+
+saveas(gca,'traj_mass','epsc');
+
+
+st_nf = 55;
+st_nf_index = round(st_nf/opvar(1,end)*length((opvar(1,:))));
 
 figure
-plot3(opvar(2,1:100:end),opvar(3,1:100:end),opvar(4,1:100:end));
+p1 = plot(opvar(1,st_nf_index:100:et_nf_index),opvar(2,st_nf_index:100:et_nf_index),'-b'); grid on; hold on;
+p2 = plot(opvar(1,st_nf_index:100:et_nf_index),-opvar(3,st_nf_index:100:et_nf_index),'-r');
+p3 = plot(opvar(1,st_nf_index:100:et_nf_index),opvar(4,st_nf_index:100:et_nf_index)+0.317,'-k');
+
+st = 61;
+for j =1:4
+for i =1:5
+    if i ~= 5
+      duree = 3;
+      sind = round(st/opvar(1,end)*length(opvar(1,:)));
+      durind = round((duree)/opvar(1,end)*length(opvar(1,:)));
+    if j == 4
+      plot([opvar(1,sind),opvar(1,sind)],[-2 2.5],'--k');
+      plot([opvar(1,sind+durind),opvar(1,sind+durind)],[-2 2.5],'--k'); 
+    else
+      plot([opvar(1,sind),opvar(1,sind)],[-2 2.5],'--k');
+      plot([opvar(1,sind+durind),opvar(1,sind+durind)],[-2 2.5],'--k');
+    end
+    end
+  st = st+8;
+end
+end
+
+axis([55 215 -0.6 2.1]);
+l1 = legend([p1,p2,p3],'x','y','z');
+l1.Location = 'NorthEastOutside';
+saveas(gca,'traj_mass_temps','epsc');
+
+st = 10;
+stindex = round((st/DS.time(end))*length(DS.time));
+
+et = 170;
+etindex = round((et/DS.time(end))*length(DS.time));
 
 
+figure
+p1 = plot(DS.time(stindex:etindex),DS.roll(stindex:etindex),'-b');hold on; grid on;
+p2 = plot(DS.time(stindex:etindex),DS.pitch(stindex:etindex),'-r');
+p3 = plot(DS.time(stindex:etindex),DS.yaw(stindex:etindex),'-k');
 
-% NO FORCE
+axis([10 170 -2 2]);
 
-figure;
-plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-plot(DS.time, DS.pitch-mean(DS.pitch));
-plot(DS.time, DS.yaw-mean(DS.yaw));
-% 
-st = 6;
+st = 14;
 dv = {}
 for j =1:4
 for i =1:5
-[f,power,sind,durind] = fft_pallier(DS,st,4);
+    if i ~= 5
+[f,power,sind,durind] = fft_pallier(DS,st,3);
     dv{i,1,j} = f;
     dv{i,2,j} = power;
     dv{i,3,j} = sind;
     dv{i,4,j} = durind;
     if j == 4
-      plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+      plot([DS.time(sind),DS.time(sind)],[-2 2],'--k');
+  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--k'); 
     else
-  plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+  plot([DS.time(sind),DS.time(sind)],[-2 2],'--k');
+  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--k');
+    end
     end
   st = st+8;
 end
@@ -49,137 +104,356 @@ dv{i+1,1,j} = f;
 temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
 dv{i+1,2,j} = mean(temp);
 end
+% axis([78 230 -2 1.5]);
+xlabel('x'); ylabel('y');
+l1 = legend([p1,p2,p3],'roll','pitch','yaw');
+l1.Location = 'NorthEastOutside';
+
+saveas(gca,'IMU_mass','epsc');
+
 figure
 for j = 1:4
-    subplot(5,1,j)
+    subplot(4,1,j)
     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-    axis([0 5 0 max(dv{i+1,2,j})]);
+     axis([0 5 0 1]);
+    grid on;
+    xlabel('freq'); ylabel('mag');
+    title(strcat('eta',num2str(j)));
 end
 
+saveas(gca,'IMU_mass_freq','epsc');
 
-figure;
-plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-plot(DS.time, DS.pitch-mean(DS.pitch));
-plot(DS.time, DS.yaw-mean(DS.yaw));
 
-st = 2;
-dvt = {}
+
+
+
+
+% Mass and force 
+
+
+st = 220;
+sti = round(st/opvar(1,end)*length((opvar(1,:))));
+et = 380;
+eti = round((et/opvar(1,end))*length((opvar(1,:))));
+
+figure 
+p1 = plot(opvar(1,sti:100:eti),opvar(2,sti:100:eti),'-b'); hold on; grid on;
+p2 = plot(opvar(1,sti:100:eti),-opvar(3,sti:100:eti),'-r');
+p3 = plot(opvar(1,sti:100:eti),opvar(4,sti:100:eti)+0.317,'-k');
+axis([220 380 -0.5 2.1]);
+xlabel('x'); ylabel('y');
+st = 229;
 for j =1:4
 for i =1:5
-[f,power,sind,durind] = fft_pallier(DS,st,4);
-    dv{i,1,j} = f;
-    dv{i,2,j} = power;
-    dv{i,3,j} = sind;
-    dv{i,4,j} = durind;
+    if i ~= 5
+      duree = 3;
+      sind = round(st/opvar(1,end)*length(opvar(1,:)));
+      durind = round((duree)/opvar(1,end)*length(opvar(1,:)));
     if j == 4
-      plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+      plot([opvar(1,sind),opvar(1,sind)],[-2 2.5],'--k');
+      plot([opvar(1,sind+durind),opvar(1,sind+durind)],[-2 2.5],'--k'); 
     else
-  plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+      plot([opvar(1,sind),opvar(1,sind)],[-2 2.5],'--k');
+      plot([opvar(1,sind+durind),opvar(1,sind+durind)],[-2 2.5],'--k');
+    end
     end
   st = st+8;
 end
-dv{i+1,1,j} = f;
-if j ==1
-temp  = [dv{1,2,j}';dv{2,2,j}';dv{4,2,j}';dv{5,2,j}'];
-else
-    temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
 end
-dv{i+1,2,j} = mean(temp);
-end
+
+legend([p1,p2,p3],'x','y','z');
+
+saveas(gca,'pos_time_mass_force','epsc');
+
+
+
+
 figure
-for j = 1:4
-    subplot(5,1,j)
-    plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-    axis([0 5 0 max(dv{i+1,2,j})]);
-    xlabel('frequency');
-    ylabel('power');
-end
+plot3(opvar(2,sti:100:eti),-opvar(3,sti:100:eti),opvar(4,sti:100:eti)+0.317,'-b');
+grid on; hold on;
+K = convhull(pii_1(:,1),pii_1(:,2));
+plot3(pii_1(K,1),pii_1(K,2),2*ones(length(K)),'-g');
+set(gca,'YDir','reverse');
+set(gca,'ZDir','reverse');
+xlabel('x');
+ylabel('y');
+view(0,90);
 
 
+saveas(gca,'pos_mass_force','epsc');
 
 
+st = 185;
+sti = round((st/DS.time(end))*length(DS.time));
+et = 340;
+eti = round((et/DS.time(end))*length(DS.time));
 
-% WITH FORCE
-figure;
-plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-plot(DS.time, DS.pitch-mean(DS.pitch));
-plot(DS.time, DS.yaw-mean(DS.yaw));
-% 
-st = 182;
+figure 
+plot(DS.time(sti:eti),DS.roll(sti:eti),'-b');
+hold on; grid on;
+plot(DS.time(sti:eti),DS.pitch(sti:eti),'-r');
+plot(DS.time(sti:eti),DS.yaw(sti:eti),'-k');
+axis([st et -4 6]);
+xlabel('x'); ylabel('y');
+
+st = 190;
 dv = {}
 for j =1:4
 for i =1:5
-[f,power,sind,durind] = fft_pallier(DS,st,4);
+    if i ~= 5
+[f,power,sind,durind] = fft_pallier(DS,st,3);
     dv{i,1,j} = f;
     dv{i,2,j} = power;
     dv{i,3,j} = sind;
     dv{i,4,j} = durind;
     if j == 4
-      plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+      plot([DS.time(sind),DS.time(sind)],[-4 6],'--k');
+  plot([DS.time(sind+durind),DS.time(sind+durind)],[-4 6],'--k'); 
     else
-  plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+  plot([DS.time(sind),DS.time(sind)],[-4 6],'--k');
+  plot([DS.time(sind+durind),DS.time(sind+durind)],[-4 6],'--k');
+    end
     end
   st = st+8;
 end
 dv{i+1,1,j} = f;
 if j ==1
-    temp  = [dv{1,2,j}';dv{2,2,j}';dv{4,2,j}';dv{5,2,j}'];
+temp =  [dv{1,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
 else
-    temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
 end
 dv{i+1,2,j} = mean(temp);
 end
-figure
-for j = 1:4
-    subplot(5,1,j)
-    plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-    axis([0 5 0 max(dv{i+1,2,j})]);
-end
-% 
-% 
-figure;
-plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
-plot(DS.time, DS.pitch-mean(DS.pitch));
-plot(DS.time, DS.yaw-mean(DS.yaw));
+% axis([78 230 -2 1.5]);
+xlabel('x'); ylabel('y');
+l1 = legend([p1,p2,p3],'roll','pitch','yaw');
+l1.Location = 'NorthEastOutside';
 
-st = 178;
-dvt = {}
-for j =1:4
-for i =1:5
-[f,power,sind,durind] = fft_pallier(DS,st,4);
-    dv{i,1,j} = f;
-    dv{i,2,j} = power;
-    dv{i,3,j} = sind;
-    dv{i,4,j} = durind;
-    if j == 4
-      plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
-    else
-  plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
-  plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
-    end
-  st = st+8;
-end
-dv{i+1,1,j} = f;
-if j ==1
-    temp  = [dv{1,2,j}';dv{2,2,j}';dv{4,2,j}';dv{5,2,j}'];
-else
-    temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
-end
-dv{i+1,2,j} = mean(temp);
-end
+saveas(gca,'IMU_mass_force','epsc');
+
 figure
 for j = 1:4
-    subplot(5,1,j)
+    subplot(4,1,j)
     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
-    axis([0 5 0 max(dv{i+1,2,j})]);
-    xlabel('frequency');
-    ylabel('power');
+     axis([0 5 0 max(dv{i+1,2,j})]);
+    grid on;
+    xlabel('freq'); ylabel('mag');
+    title(strcat('eta',num2str(j)));
 end
+
+saveas(gca,'IMU_mass_force_freq','epsc');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% 
+% % NO FORCE
+% 
+% figure;
+% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
+% plot(DS.time, DS.pitch-mean(DS.pitch));
+% plot(DS.time, DS.yaw-mean(DS.yaw));
+% % 
+% st = 6;
+% dv = {}
+% for j =1:4
+% for i =1:5
+% [f,power,sind,durind] = fft_pallier(DS,st,4);
+%     dv{i,1,j} = f;
+%     dv{i,2,j} = power;
+%     dv{i,3,j} = sind;
+%     dv{i,4,j} = durind;
+%     if j == 4
+%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+%     else
+%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+%     end
+%   st = st+8;
+% end
+% dv{i+1,1,j} = f;
+% temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% dv{i+1,2,j} = mean(temp);
+% end
+% figure
+% for j = 1:4
+%     subplot(5,1,j)
+%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+%     axis([0 5 0 max(dv{i+1,2,j})]);
+% end
+% 
+% 
+% figure;
+% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
+% plot(DS.time, DS.pitch-mean(DS.pitch));
+% plot(DS.time, DS.yaw-mean(DS.yaw));
+% 
+% st = 2;
+% dvt = {}
+% for j =1:4
+% for i =1:5
+% [f,power,sind,durind] = fft_pallier(DS,st,4);
+%     dv{i,1,j} = f;
+%     dv{i,2,j} = power;
+%     dv{i,3,j} = sind;
+%     dv{i,4,j} = durind;
+%     if j == 4
+%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+%     else
+%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+%     end
+%   st = st+8;
+% end
+% dv{i+1,1,j} = f;
+% if j ==1
+% temp  = [dv{1,2,j}';dv{2,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% else
+%     temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% end
+% dv{i+1,2,j} = mean(temp);
+% end
+% figure
+% for j = 1:4
+%     subplot(5,1,j)
+%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+%     axis([0 5 0 max(dv{i+1,2,j})]);
+%     xlabel('frequency');
+%     ylabel('power');
+% end
+% 
+% 
+% 
+% 
+% 
+% % WITH FORCE
+% figure;
+% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
+% plot(DS.time, DS.pitch-mean(DS.pitch));
+% plot(DS.time, DS.yaw-mean(DS.yaw));
+% % 
+% st = 182;
+% dv = {}
+% for j =1:4
+% for i =1:5
+% [f,power,sind,durind] = fft_pallier(DS,st,4);
+%     dv{i,1,j} = f;
+%     dv{i,2,j} = power;
+%     dv{i,3,j} = sind;
+%     dv{i,4,j} = durind;
+%     if j == 4
+%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+%     else
+%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+%     end
+%   st = st+8;
+% end
+% dv{i+1,1,j} = f;
+% if j ==1
+%     temp  = [dv{1,2,j}';dv{2,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% else
+%     temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% end
+% dv{i+1,2,j} = mean(temp);
+% end
+% figure
+% for j = 1:4
+%     subplot(5,1,j)
+%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+%     axis([0 5 0 max(dv{i+1,2,j})]);
+% end
+% % 
+% % 
+% figure;
+% plot(DS.time, DS.roll-mean(DS.roll)); hold on; grid on;
+% plot(DS.time, DS.pitch-mean(DS.pitch));
+% plot(DS.time, DS.yaw-mean(DS.yaw));
+% 
+% st = 178;
+% dvt = {}
+% for j =1:4
+% for i =1:5
+% [f,power,sind,durind] = fft_pallier(DS,st,4);
+%     dv{i,1,j} = f;
+%     dv{i,2,j} = power;
+%     dv{i,3,j} = sind;
+%     dv{i,4,j} = durind;
+%     if j == 4
+%       plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r'); 
+%     else
+%   plot([DS.time(sind),DS.time(sind)],[-2 2],'--b');
+%   plot([DS.time(sind+durind),DS.time(sind+durind)],[-2 2],'--r');
+%     end
+%   st = st+8;
+% end
+% dv{i+1,1,j} = f;
+% if j ==1
+%     temp  = [dv{1,2,j}';dv{2,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% else
+%     temp  = [dv{1,2,j}';dv{2,2,j}';dv{3,2,j}';dv{4,2,j}';dv{5,2,j}'];
+% end
+% dv{i+1,2,j} = mean(temp);
+% end
+% figure
+% for j = 1:4
+%     subplot(5,1,j)
+%     plot(dv{i+1,1,j},dv{i+1,2,j},'-b');
+%     axis([0 5 0 max(dv{i+1,2,j})]);
+%     xlabel('frequency');
+%     ylabel('power');
+% end
 
 
 
@@ -348,20 +622,26 @@ function fft_plot(indices,DS)
 end
 
 function [f,power,sind,durind] = fft_pallier(DS,stime,duree)
-        sind = round(stime/DS.time(end)*length(DS.time));
+ sind = round(stime/DS.time(end)*length(DS.time));
         durind = round((duree)/DS.time(end)*length(DS.time));
-        rd = DS.roll(sind:sind+durind);
-        rp = DS.pitch(sind:sind+durind);
-        ry = DS.yaw(sind:sind+durind);
-        norm = sqrt(rd.^2+rp.^2+ry.^2);
+        rd = DS.roll(sind:sind+durind)-DS.roll(sind);
+        rp = DS.pitch(sind:sind+durind)-DS.pitch(sind);
+        ry = DS.yaw(sind:sind+durind)-DS.yaw(sind);
+        
+       rd = detrend(rd,'linear'); rp = detrend(rp,'linear'); ry = detrend(ry,'linear');
+        fftrd = fft(rd); fftrp = fft(rp); fftry = fft(ry);
+%         norm = sqrt(rd.^2+rp.^2+ry.^2);
 %         norm = norm-norm(1);
 %         norm = norm-mean(norm);
-        norm = detrend(norm,'linear');
+%         norm = detrend(norm,'linear');
         fs = DS.fs;
-        fftv = fft(norm);
-        n = length(norm);
+%         fftv = fft(norm);
+        n = length(rd);
         f = (0:n-1)*(fs/n);
-        power = abs(fftv).^2/n;
+        powerrd = abs(fftrd).^2/n%.^2/n;
+        powerrp = abs(fftrp).^2/n%.^2/n;
+        powerry = abs(fftry).^2/n%.^2/n;
+        power = powerrd+powerrp+powerry;
 
 end
 
